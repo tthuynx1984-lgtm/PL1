@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cổng Tra cứu & Thẩm định Pháp luật Đất đai Phú Thọ</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(51, 65, 85, 0.8); border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(100, 116, 139, 1); }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased overflow-x-hidden">
+
+    <!-- ================= MAIN HEADER & TOP NAVIGATION ================= -->
+    <header class="bg-slate-900 border-b border-slate-800 px-4 py-3 flex flex-col md:flex-row md:items-center justify-between gap-3 flex-none shadow-lg z-20">
+        <!-- Logo & Title -->
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-500 to-blue-700 flex items-center justify-center text-white text-lg font-black shadow-md shadow-sky-500/20 flex-none">
+                <i class="fa-solid fa-scale-balanced"></i>
+            </div>
+            <div>
+                <h1 class="font-extrabold text-sm md:text-base text-slate-100 leading-tight">
+                    CỔNG TRA CỨU & THẨM ĐỊNH PHÁP LUẬT ĐẤT ĐAI
+                </h1>
+                <div class="flex items-center gap-2 text-[10px] md:text-xs text-sky-400 font-medium">
+                    <span><i class="fa-solid fa-location-dot"></i> Tỉnh Phú Thọ</span>
+                    <span>•</span>
+                    <span class="text-slate-400">Cập nhật Luật Đất đai 2024 & NĐ 101/2024</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Switcher Navigation -->
+        <nav class="flex items-center bg-slate-950 p-1 rounded-xl border border-slate-800 self-stretch md:self-auto overflow-x-auto custom-scrollbar">
+            <button id="tab-btn-docs" onclick="switchMainTab('docs')" 
+                    class="flex-1 md:flex-none px-3.5 py-2 md:py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-sky-500 text-white shadow-md">
+                <i class="fa-solid fa-book-bookmark"></i>
+                <span>Văn bản Pháp luật</span>
+            </button>
+            <button id="tab-btn-calc" onclick="switchMainTab('calc')" 
+                    class="flex-1 md:flex-none px-3.5 py-2 md:py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 text-slate-400 hover:text-slate-200">
+                <i class="fa-solid fa-calculator"></i>
+                <span>Thẩm định Hồ sơ & TTHC</span>
+            </button>
+        </nav>
+    </header>
+
+    <!-- MAIN BODY CONTAINER -->
+    <main class="flex-1 flex flex-col overflow-hidden relative">
+        
+        <!-- ================= TAB 1: DANH MỤC VĂN BẢN PHÁP LUẬT & NỘI DUNG TRA CỨU ================= -->
+        <div id="main-view-docs" class="flex-1 w-full h-full flex flex-col md:flex-row overflow-y-auto md:overflow-hidden">
+            <!-- Sidebar Navigation Left -->
+            <aside class="w-full md:w-80 lg:w-96 bg-slate-900 border-b md:border-b-0 md:border-r border-slate-800 flex flex-col flex-none max-h-[50vh] md:max-h-full">
+                <!-- Search & Filters Header -->
+                <div class="p-3.5 border-b border-slate-800 space-y-2.5 bg-slate-900/90">
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                        <input type="text" id="doc-search-input" oninput="applyFilters()" placeholder="Tìm theo tên văn bản, số hiệu..." 
+                               class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-8 pr-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-sky-500">
+                    </div>
+
+                    <!-- Category Filters -->
+                    <div class="flex items-center justify-between text-[11px] gap-1">
+                        <div class="flex items-center gap-1 overflow-x-auto custom-scrollbar">
+                            <button onclick="setFilterLevel('all')" id="filter-all" class="px-2 py-1 rounded-md bg-sky-500/20 text-sky-400 border border-sky-500/30 font-semibold">Tất cả</button>
+                            <button onclick="setFilterLevel('trung-uong')" id="filter-trung-uong" class="px-2 py-1 rounded-md bg-slate-800 text-slate-400 hover:bg-slate-700">Trung ương</button>
+                            <button onclick="setFilterLevel('phu-tho')" id="filter-phu-tho" class="px-2 py-1 rounded-md bg-slate-800 text-slate-400 hover:bg-slate-700">Phú Thọ</button>
+                        </div>
+                        <button onclick="toggleBookmarkOnly()" id="bookmark-toggle-btn" class="px-2 py-1 rounded-md bg-slate-800 text-slate-400 hover:bg-slate-700 flex items-center gap-1 flex-none">
+                            <i class="fa-solid fa-bookmark text-amber-400"></i> Đã lưu
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Document List Items -->
+                <div id="doc-list-container" class="flex-1 overflow-y-auto p-2 space-y-1.5 custom-scrollbar">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </aside>
+
+            <!-- Main Content Area Right -->
+            <section class="flex-1 bg-slate-950 flex flex-col overflow-y-auto custom-scrollbar">
+                <div id="doc-detail-view" class="p-4 md:p-6 space-y-6 max-w-4xl mx-auto w-full">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </section>
+        </div>
+
+        <!-- ================= TAB 2: THẨM ĐỊNH HỒ SƠ TÌNH HUỐNG & TRA CỨU THỜI HẠN THỦ TỤC TTHC ================= -->
+        <div id="main-view-calc" class="hidden flex-1 w-full h-full flex flex-col md:flex-row overflow-y-auto md:overflow-hidden">
+            
+            <!-- CỘT BÊN TRÁI: DANH SÁCH BẢNG TRA CỨU THỦ TỤC & THỜI HẠN TTHC -->
+            <aside class="w-full md:w-[380px] lg:w-[440px] bg-slate-900 border-b md:border-b-0 md:border-r border-slate-800 flex flex-col flex-none shadow-2xl max-h-[60vh] md:max-h-full">
+                <div class="p-3.5 border-b border-slate-800 bg-slate-900/90 flex justify-between items-center flex-none">
+                    <div>
+                        <h3 class="text-xs font-bold text-sky-400 uppercase tracking-wider flex items-center gap-1.5">
+                            <i class="fa-solid fa-clock-rotate-left"></i> Thủ tục & Thời hạn TTHC
+                        </h3>
+                        <p class="text-[10px] text-slate-400">Nghị định 101/2024/NĐ-CP (Trừ T7, CN & Lễ)</p>
+                    </div>
+                    <span class="text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded font-mono font-bold">12 TTHC</span>
+                </div>
+
+                <!-- Procedure List & Calculator Container -->
+                <div class="flex-1 overflow-y-auto p-3.5 space-y-3.5 custom-scrollbar">
+                    
+                    <!-- Quick Procedure Calculator Component -->
+                    <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-3 shadow-md">
+                        <div class="font-bold text-xs text-slate-200 flex items-center justify-between">
+                            <span class="flex items-center gap-1.5 text-amber-400"><i class="fa-solid fa-calculator"></i> Tính Ngày Trả Kế Quả</span>
+                            <span class="text-[10px] text-slate-400">Tự động trừ thứ 7 & CN</span>
+                        </div>
+
+                        <div class="space-y-2 text-xs">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-400 mb-1">Loại thủ tục tiếp nhận:</label>
+                                <select id="proc-type" onchange="calculateProcDueDate()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200 font-medium focus:ring-1 focus:ring-sky-500 outline-none text-xs">
+                                    <option value="15">1. Đăng ký, cấp mới GCN lần đầu (Tối đa 15 ngày)</option>
+                                    <option value="8">2. Chuyển nhượng QSDĐ (Tối đa 8 ngày)</option>
+                                    <option value="8-tangcho">3. Tặng cho QSDĐ (Tối đa 8 ngày)</option>
+                                    <option value="8-thuake">4. Thừa kế QSDĐ (Tối đa 8 ngày)</option>
+                                    <option value="15-tach">5. Tách thửa đất (Tối đa 15 ngày)</option>
+                                    <option value="15-hop">6. Hợp thửa đất (Tối đa 15 ngày)</option>
+                                    <option value="3">7. Thế chấp / Đăng ký GDBĐ (Tối đa 3 ngày)</option>
+                                    <option value="10">8. Cấp lại GCN do mất (Tối đa 10 ngày)</option>
+                                    <option value="5">9. Cấp đổi GCN (Tối đa 5 ngày)</option>
+                                    <option value="5-dinhchinh">10. Đính chính GCN (Tối đa 5 ngày)</option>
+                                    <option value="10-chuyen">11. Chuyển mục đích SDĐ (Tối đa 10 ngày)</option>
+                                    <option value="7">12. Gia hạn thời hạn SDĐ (Tối đa 7 ngày)</option>
+                                </select>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-400 mb-1">Ngày nộp hồ sơ đủ lệ phí:</label>
+                                    <input type="date" id="proc-start-date" onchange="calculateProcDueDate()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200 font-medium outline-none text-xs">
+                                </div>
+                                <div class="flex items-end">
+                                    <label class="flex items-center gap-2 cursor-pointer bg-slate-900 p-2 rounded-lg border border-slate-800 w-full h-[34px]">
+                                        <input type="checkbox" id="proc-mountain" onchange="calculateProcDueDate()" class="w-3.5 h-3.5 text-amber-500 rounded border-slate-700 bg-slate-950">
+                                        <span class="text-[10px] font-bold text-amber-300 leading-tight">Xã miền núi (+10 ngày)</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div id="proc-result-box" class="p-2.5 rounded-lg bg-sky-950/60 border border-sky-500/30 flex justify-between items-center text-xs">
+                                <span class="text-slate-300">Hạn trả KQ tối đa:</span>
+                                <span id="res-proc-date" class="font-extrabold text-sky-400 text-xs sm:text-sm">---</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Complete Procedure Table List -->
+                    <div class="space-y-2">
+                        <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-1">Danh mục thủ tục & Thành phần hồ sơ</div>
+                        <div class="space-y-2 text-xs" id="proc-list-items">
+                            <!-- JS Populated Items -->
+                        </div>
+                    </div>
+
+                </div>
+            </aside>
+
+            <!-- CỘT BÊN PHẢI: CÔNG CỤ THẨM ĐỊNH HỒ SƠ TÌNH HUỐNG (AI ASSISTANT) -->
+            <section class="flex-1 bg-slate-950 flex flex-col p-4 md:p-6 overflow-y-auto custom-scrollbar space-y-4">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 md:p-5 space-y-4 shadow-xl">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <div>
+                            <h2 class="text-sm md:text-base font-bold text-slate-100 flex items-center gap-2">
+                                <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i> Trợ lý Thẩm định Pháp lý Đất đai
+                            </h2>
+                            <p class="text-xs text-slate-400 mt-0.5">Nhập mô tả chi tiết hồ sơ hoặc tình huống cần kiểm tra điều kiện pháp lý</p>
+                        </div>
+                        <span class="bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[10px] font-bold px-2.5 py-1 rounded-lg">Luật Đất đai 2024</span>
+                    </div>
+
+                    <div class="space-y-3">
+                        <textarea id="ai-case-input" rows="4" 
+                                  placeholder="Ví dụ: Hộ gia đình tại huyện Thanh Sơn muốn tách thửa 200m2 đất ở. Đất có sổ đỏ năm 2015, không tranh chấp, đường vào 3m..."
+                                  class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-sky-500 custom-scrollbar"></textarea>
+
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <div class="flex items-center gap-2">
+                                <button onclick="runAiEvaluation()" class="px-4 py-2 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-2">
+                                    <i class="fa-solid fa-circle-play"></i> Bắt đầu Thẩm định
+                                </button>
+                                <button onclick="clearAiInput()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-xs rounded-xl transition">
+                                    Xóa
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Result Box -->
+                <div id="ai-result-panel" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-4 md:p-5 space-y-4 shadow-xl">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <h3 class="text-xs md:text-sm font-bold text-sky-400 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-clipboard-check"></i> Kết quả Đánh giá Thẩm định
+                        </h3>
+                        <span id="ai-status-badge" class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold px-2 py-0.5 rounded">ĐỦ ĐIỀU KIỆN SƠ BỘ</span>
+                    </div>
+
+                    <div id="ai-result-content" class="text-xs text-slate-300 space-y-3 leading-relaxed">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </main>
+
+    <!-- MODAL POPUP XEM THÀNH PHẦN HỒ SƠ & FILE MẪU -->
+    <div id="dossier-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+            <div class="bg-slate-950 p-4 border-b border-slate-800 flex items-center justify-between flex-none">
+                <div class="flex items-center gap-2">
+                    <span class="w-3 h-3 rounded-full bg-sky-500"></span>
+                    <h3 id="dossier-modal-title" class="font-bold text-sm text-slate-100 flex items-center gap-2">
+                        THÀNH PHẦN HỒ SƠ THỦ TỤC
+                    </h3>
+                </div>
+                <button onclick="closeDossierModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <div class="p-5 flex-1 overflow-y-auto custom-scrollbar space-y-4 text-xs">
+                <div id="dossier-modal-meta" class="p-3 bg-sky-950/40 border border-sky-500/30 rounded-xl flex items-center justify-between text-slate-300">
+                    <span>Thời hạn giải quyết: <strong id="dossier-days" class="text-sky-400">15 ngày làm việc</strong></span>
+                    <span id="dossier-law-ref" class="text-[11px] text-slate-400">Nghị định 101/2024/NĐ-CP</span>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-slate-200 mb-2 uppercase tracking-wider text-[11px] flex items-center gap-1.5 text-amber-400">
+                        <i class="fa-solid fa-list-check"></i> Các giấy tờ phải nộp trong hồ sơ:
+                    </h4>
+                    <ul id="dossier-checklist" class="space-y-2 divide-y divide-slate-800"></ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-slate-200 mb-2 uppercase tracking-wider text-[11px] flex items-center gap-1.5 text-sky-400">
+                        <i class="fa-solid fa-folder-open"></i> Biểu mẫu & File tài liệu đính kèm mẫu:
+                    </h4>
+                    <div id="dossier-templates" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5"></div>
+                </div>
+            </div>
+
+            <div class="bg-slate-950 p-3.5 border-t border-slate-800 flex justify-end flex-none">
+                <button onclick="closeDossierModal()" class="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs rounded-lg transition">
+                    Đóng cửa sổ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-slate-100 text-xs px-4.5 py-3 rounded-xl shadow-2xl z-50 hidden flex items-center gap-3 border border-slate-700">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-sky-400 text-base"></i>
+        <span id="toast-message">Đã thực hiện!</span>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // LEGISLATIVE DATABASE
+        const legalDatabase = [
+            {
+                id: 'luat-31-2024',
+                code: '31/2024/QH15',
+                title: 'Luật Đất đai 2024',
+                level: 'trung-uong',
+                date: '18/01/2024',
+                issuer: 'Quốc hội',
+                summary: 'Luật Đất đai số 31/2024/QH15 thay thế Luật Đất đai 2013 với nhiều điểm mới về hạn mức, bảng giá đất, thu hồi đất và quyền người sử dụng đất.',
+                content: `
+                    <h3 class="text-base font-bold text-sky-400 mb-2">LUẬT ĐẤT ĐAI SỐ 31/2024/QH15</h3>
+                    <p class="mb-3 text-slate-300">Căn cứ Hiến pháp nước Cộng hòa xã hội chủ nghĩa Việt Nam; Quốc hội ban hành Luật Đất đai.</p>
+                    <div class="space-y-4">
+                        <div class="bg-slate-900 p-3.5 rounded-xl border border-slate-800">
+                            <h4 class="font-bold text-slate-200 mb-1">Chương I: Quy định chung</h4>
+                            <p class="text-slate-400 text-xs">Quy định về sở hữu đất đai, quyền hạn và trách nhiệm của Nhà nước đại diện chủ sở hữu toàn dân về đất đai và thống nhất quản lý về đất đai.</p>
+                        </div>
+                        <div class="bg-slate-900 p-3.5 rounded-xl border border-slate-800">
+                            <h4 class="font-bold text-slate-200 mb-1">Điều 137: Cấp Giấy chứng nhận cho hộ gia đình, cá nhân đang sử dụng đất có giấy tờ</h4>
+                            <p class="text-slate-400 text-xs">Hộ gia đình, cá nhân đang sử dụng đất ổn định mà có một trong các loại giấy tờ lập trước ngày 15/10/1993 thì được cấp GCN không phải nộp tiền sử dụng đất.</p>
+                        </div>
+                        <div class="bg-slate-900 p-3.5 rounded-xl border border-slate-800">
+                            <h4 class="font-bold text-slate-200 mb-1">Điều 220: Tách thửa đất, hợp thửa đất</h4>
+                            <p class="text-slate-400 text-xs">Việc tách thửa đất, hợp thửa đất phải bảo đảm các nguyên tắc, điều kiện về diện tích tối thiểu, đường đi và đấu nối hạ tầng kỹ thuật.</p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'nd-101-2024',
+                code: '101/2024/NĐ-CP',
+                title: 'Nghị định 101/2024/NĐ-CP về Đăng ký, Cấp GCN QSDĐ & TTHC',
+                level: 'trung-uong',
+                date: '29/07/2024',
+                issuer: 'Chính phủ',
+                summary: 'Quy định chi tiết về điều tra cơ bản đất đai; đăng ký, cấp Giấy chứng nhận quyền sử dụng đất, tài sản gắn liền với đất và Hệ thống thông tin đất đai.',
+                content: `
+                    <h3 class="text-base font-bold text-sky-400 mb-2">NGHỊ ĐỊNH 101/2024/NĐ-CP</h3>
+                    <p class="mb-3 text-slate-300">Nghị định quy định về đăng ký đất đai, tài sản gắn liền với đất và cấp Giấy chứng nhận quyền sử dụng đất, quyền sở hữu tài sản gắn liền với đất.</p>
+                    <div class="space-y-3">
+                        <div class="bg-slate-900 p-3.5 rounded-xl border border-slate-800">
+                            <h4 class="font-bold text-slate-200 mb-1">Trình tự, thủ tục đăng ký đất đai lần đầu</h4>
+                            <p class="text-slate-400 text-xs">Thời gian thực hiện thủ tục đăng ký đất đai, tài sản gắn liền với đất lần đầu là không quá 15 ngày làm việc.</p>
+                        </div>
+                        <div class="bg-slate-900 p-3.5 rounded-xl border border-slate-800">
+                            <h4 class="font-bold text-slate-200 mb-1">Trình tự đăng ký biến động (Chuyển nhượng, Tặng cho, Thừa kế)</h4>
+                            <p class="text-slate-400 text-xs">Thời gian thực hiện thủ tục đăng ký biến động không quá 08 ngày làm việc.</p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'qd-phu-tho-2024',
+                code: 'QĐ 22/2024/UBND',
+                title: 'Quyết định UBND tỉnh Phú Thọ về hạn mức giao đất & tách thửa',
+                level: 'phu-tho',
+                date: '15/08/2024',
+                issuer: 'UBND tỉnh Phú Thọ',
+                summary: 'Quy định chi tiết về hạn mức giao đất ở, hạn mức công nhận đất ở, diện tích tối thiểu được phép tách thửa đối với các loại đất trên địa bàn tỉnh Phú Thọ.',
+                content: `
+                    <h3 class="text-base font-bold text-sky-400 mb-2">QUYẾT ĐỊNH UBND TỈNH PHÚ THỌ</h3>
+                    <div class="space-y-3 text-xs">
+                        <div class="bg-slate-900 p-3.5 rounded-xl border border-slate-800">
+                            <h4 class="font-bold text-amber-400 mb-1">Diện tích tối thiểu tách thửa đất ở tại Phú Thọ:</h4>
+                            <ul class="list-disc pl-4 text-slate-300 space-y-1">
+                                <li>Các phường thuộc TP. Việt Trì, TX. Phú Thọ: Tối thiểu 50 m², chiều rộng mặt tiền từ 4m trở lên.</li>
+                                <li>Các thị trấn thuộc huyện: Tối thiểu 60 m², chiều rộng mặt tiền từ 4m trở lên.</li>
+                                <li>Các xã vùng đồng bằng, trung du: Tối thiểu 80 m², chiều rộng mặt tiền từ 5m trở lên.</li>
+                                <li>Các xã vùng miền núi: Tối thiểu 100 m², chiều rộng mặt tiền từ 5m trở lên.</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            }
+        ];
+
+        // DANH MỤC THỦ TỤC HÀNH CHÍNH & THỜI HẠN NĐ 101/2024
+        const procedureList = [
+            { 
+                id: 1, 
+                shortName: 'Cấp mới GCN', 
+                fullName: 'Đăng ký, cấp Giấy chứng nhận QSDĐ lần đầu', 
+                days: 15,
+                checklist: [
+                    'Đơn đăng ký đất đai, tài sản gắn liền với đất (Mẫu số 01/ĐK theo NĐ 101/2024)',
+                    'Một trong các loại giấy tờ về QSDĐ quy định tại Điều 137 Luật Đất đai 2024 (nếu có)',
+                    'Giấy tờ về tài sản gắn liền với đất (Giấy phép xây dựng, sơ đồ nhà ở... nếu đăng ký tài sản)',
+                    'Bản trích đo địa chính thửa đất (nếu có)',
+                    'Tờ khai nghĩa vụ tài chính về đất đai (Thuế TNCN, Lệ phí trước bạ)'
+                ],
+                templates: [
+                    { name: 'Đơn đăng ký đất đai lần đầu (Mẫu 01/ĐK).docx', type: 'doc', icon: 'fa-file-word text-blue-400' },
+                    { name: 'Sơ đồ nhà đất trích đo địa chính mẫu.pdf', type: 'pdf', icon: 'fa-file-pdf text-rose-400' }
+                ]
+            },
+            { 
+                id: 2, 
+                shortName: 'Chuyển nhượng QSDĐ', 
+                fullName: 'Đăng ký biến động do chuyển nhượng quyền sử dụng đất', 
+                days: 8,
+                checklist: [
+                    'Đơn đăng ký biến động đất đai, tài sản (Mẫu số 11/ĐK theo NĐ 101/2024)',
+                    'Hợp đồng chuyển nhượng quyền sử dụng đất đã được công chứng/chứng thực',
+                    'Bản gốc Giấy chứng nhận QSDĐ đã cấp (Sổ đỏ/Sổ hồng)',
+                    'Tờ khai thuế thu nhập cá nhân và lệ phí trước bạ'
+                ],
+                templates: [
+                    { name: 'Đơn đăng ký biến động QSDĐ (Mẫu 11/ĐK).docx', type: 'doc', icon: 'fa-file-word text-blue-400' },
+                    { name: 'Hợp đồng chuyển nhượng QSDĐ công chứng mẫu.pdf', type: 'pdf', icon: 'fa-file-pdf text-rose-400' }
+                ]
+            },
+            { 
+                id: 3, 
+                shortName: 'Tặng cho QSDĐ', 
+                fullName: 'Đăng ký biến động do tặng cho quyền sử dụng đất', 
+                days: 8,
+                checklist: [
+                    'Đơn đăng ký biến động đất đai (Mẫu số 11/ĐK)',
+                    'Hợp đồng tặng cho QSDĐ có công chứng/chứng thực',
+                    'Bản gốc GCN QSDĐ đã cấp',
+                    'Giấy tờ chứng minh quan hệ nhân thân để miễn thuế TNCN (nếu tặng cho người thân)'
+                ],
+                templates: [
+                    { name: 'Đơn đăng ký biến động QSDĐ (Mẫu 11/ĐK).docx', type: 'doc', icon: 'fa-file-word text-blue-400' }
+                ]
+            },
+            { 
+                id: 4, 
+                shortName: 'Thừa kế QSDĐ', 
+                fullName: 'Đăng ký biến động quyền sử dụng đất do thừa kế', 
+                days: 8,
+                checklist: [
+                    'Đơn đăng ký biến động đất đai (Mẫu số 11/ĐK)',
+                    'Văn bản khai nhận di sản thừa kế hoặc Thỏa thuận phân chia di sản thừa kế (có công chứng)',
+                    'Di chúc hợp pháp hoặc Giấy chứng tử của người để lại di sản',
+                    'Bản gốc Giấy chứng nhận đã cấp'
+                ],
+                templates: [
+                    { name: 'Đơn đăng ký biến động (Mẫu 11/ĐK).docx', type: 'doc', icon: 'fa-file-word text-blue-400' }
+                ]
+            },
+            { 
+                id: 5, 
+                shortName: 'Tách thửa đất', 
+                fullName: 'Thủ tục tách thửa đất theo quy định', 
+                days: 15,
+                checklist: [
+                    'Đơn đề nghị tách thửa đất, hợp thửa đất (Mẫu số 01/THTN theo NĐ 101/2024)',
+                    'Bản gốc Giấy chứng nhận QSDĐ đã cấp',
+                    'Bản vẽ trích đo địa chính thửa đất xin tách (do Văn phòng đăng ký đất đai hoặc đơn vị đo đạc lập)',
+                    'Văn bản thỏa thuận phân chia QSDĐ (nếu tách thửa do chuyển nhượng/tặng cho một phần)'
+                ],
+                templates: [
+                    { name: 'Đơn đề nghị tách thửa đất (Mẫu 01/THTN).docx', type: 'doc', icon: 'fa-file-word text-blue-400' }
+                ]
+            },
+            { 
+                id: 6, 
+                shortName: 'Hợp thửa đất', 
+                fullName: 'Thủ tục hợp các thửa đất liền kề thành một thửa', 
+                days: 15,
+                checklist: [
+                    'Đơn đề nghị hợp thửa đất (Mẫu số 01/THTN)',
+                    'Bản gốc các Giấy chứng nhận QSDĐ của các thửa đất xin hợp thửa',
+                    'Bản vẽ trích đo địa chính thửa đất mới sau khi hợp thửa'
+                ],
+                templates: [
+                    { name: 'Đơn đề nghị hợp thửa đất (Mẫu 01/THTN).docx', type: 'doc', icon: 'fa-file-word text-blue-400' }
+                ]
+            },
+            { 
+                id: 7, 
+                shortName: 'Thế chấp / GDBĐ', 
+                fullName: 'Đăng ký thế chấp quyền sử dụng đất, tài sản gắn liền với đất', 
+                days: 3,
+                checklist: [
+                    'Đơn đăng ký thế chấp QSDĐ (Mẫu theo quy định giao dịch bảo đảm)',
+                    'Hợp đồng thế chấp QSDĐ ký với Ngân hàng / Tổ chức tín dụng',
+                    'Bản gốc Giấy chứng nhận QSDĐ đã cấp'
+                ],
+                templates: [
+                    { name: 'Đơn đăng ký thế chấp QSDĐ mẫu.docx', type: 'doc', icon: 'fa-file-word text-blue-400' }
+                ]
+            },
+            { 
+                id: 8, 
+                shortName: 'Cấp lại GCN bị mất', 
+                fullName: 'Cấp lại Giấy chứng nhận QSDĐ do bị mất', 
+                days: 10,
+                checklist: [
+                    'Đơn đề nghị cấp lại Giấy chứng nhận (Mẫu số 11/ĐK)',
+                    'Giấy xác nhận của UBND cấp xã về việc đã niêm yết thông báo mất GCN đủ 30 ngày',
+                    'Giấy xác nhận của công an cấp xã về việc trình báo mất GCN (đối với cá nhân)'
+                ],
+                templates: [
+                    { name: 'Đơn đề nghị cấp lại GCN bị mất (Mẫu 11/ĐK).docx', type: 'doc', icon: 'fa-file-word text-blue-400' }
+                ]
+            },
+            { 
+                id: 9, 
+                shortName: 'Cấp đổi GCN', 
+                fullName: 'Cấp đổi Giấy chứng nhận đã cấp do ố hỏng, đo đạc lại', 
+                days: 5,
+                checklist: [
+                    'Đơn đề nghị cấp đổi Giấy chứng nhận (Mẫu số 11/ĐK)',
+                    'Bản gốc Giấy chứng nhận đã cấp (bị rách, ố hỏng, nhòe...)',
+                    'Mảnh trích đo địa chính thửa đất (trường hợp cấp đổi do đo đạc lập bản đồ địa chính mới)'
+                ],
+                templates: [
+                    { name: 'Đơn đề nghị cấp đổi GCN (Mẫu 11/ĐK).docx', type: 'doc', icon: 'fa-file-word text-blue-400' }
+                ]
+            },
+            { 
+                id: 10, 
+                shortName: 'Đính chính GCN', 
+                fullName: 'Đính chính Giấy chứng nhận đã cấp có sai sót thông tin', 
+                days: 5,
+                checklist: [
+                    'Đơn đề nghị đính chính Giấy chứng nhận đã cấp',
+                    'Bản gốc Giấy chứng nhận có sai sót',
+                    'Giấy tờ chứng minh sai sót (CCCD mới, Giấy khai sinh, Quyết định đính chính...)'
+                ],
+                templates: [
+                    { name: 'Đơn đề nghị đính chính GCN sai sót mẫu.docx', type: 'doc', icon: 'fa-file-word text-blue-400' }
+                ]
+            },
+            { 
+                id: 11, 
+                shortName: 'Chuyển mục đích SDĐ', 
+                fullName: 'Đăng ký chuyển mục đích sử dụng đất', 
+                days: 10,
+                checklist: [
+                    'Đơn xin chuyển mục đích sử dụng đất',
+                    'Bản gốc Giấy chứng nhận QSDĐ đã cấp',
+                    'Trích đo địa chính vị trí khu đất xin chuyển mục đích'
+                ],
+                templates: [
+                    { name: 'Đơn xin chuyển mục đích SDĐ mẫu.docx', type: 'doc', icon: 'fa-file-word text-blue-400' }
+                ]
+            },
+            { 
+                id: 12, 
+                shortName: 'Gia hạn thời hạn SDĐ', 
+                fullName: 'Thủ tục gia hạn thời hạn sử dụng đất nông nghiệp / phi nông nghiệp', 
+                days: 7,
+                checklist: [
+                    'Đơn đề nghị gia hạn thời hạn sử dụng đất',
+                    'Bản gốc Giấy chứng nhận QSDĐ đã cấp',
+                    'Chứng từ nộp tiền thuê đất / thuế đất (nếu có)'
+                ],
+                templates: [
+                    { name: 'Đơn đề nghị gia hạn thời hạn SDĐ mẫu.docx', type: 'doc', icon: 'fa-file-word text-blue-400' }
+                ]
+            }
+        ];
+
+        // STATE VARIABLES
+        let currentLevelFilter = 'all';
+        let showBookmarkOnly = false;
+        let selectedDocId = 'nd-101-2024';
+        let bookmarks = JSON.parse(localStorage.getItem('land_law_bookmarks') || '[]');
+
+        // INITIALIZATION ON LOAD
+        window.onload = function() {
+            const today = new Date().toISOString().split('T')[0];
+            const dateInput = document.getElementById('proc-start-date');
+            if(dateInput) dateInput.value = today;
+
+            applyFilters();
+            selectDocument(selectedDocId);
+            renderProcedureTable();
+            calculateProcDueDate();
+        };
+
+        // TAB SWITCHING
+        function switchMainTab(tab) {
+            const docsView = document.getElementById('main-view-docs');
+            const calcView = document.getElementById('main-view-calc');
+            const btnDocs = document.getElementById('tab-btn-docs');
+            const btnCalc = document.getElementById('tab-btn-calc');
+
+            if (!docsView || !calcView) return;
+
+            if (tab === 'docs') {
+                docsView.classList.remove('hidden');
+                calcView.classList.add('hidden');
+                if (btnDocs) btnDocs.className = "flex-1 md:flex-none px-3.5 py-2 md:py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-sky-500 text-white shadow-md";
+                if (btnCalc) btnCalc.className = "flex-1 md:flex-none px-3.5 py-2 md:py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 text-slate-400 hover:text-slate-200";
+            } else {
+                docsView.classList.add('hidden');
+                calcView.classList.remove('hidden');
+                if (btnCalc) btnCalc.className = "flex-1 md:flex-none px-3.5 py-2 md:py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 bg-sky-500 text-white shadow-md";
+                if (btnDocs) btnDocs.className = "flex-1 md:flex-none px-3.5 py-2 md:py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 text-slate-400 hover:text-slate-200";
+            }
+        }
+
+        // FILTER FUNCTIONS
+        function setFilterLevel(level) {
+            currentLevelFilter = level;
+            document.querySelectorAll('[id^="filter-"]').forEach(btn => {
+                btn.className = "px-2 py-1 rounded-md bg-slate-800 text-slate-400 hover:bg-slate-700";
+            });
+            const activeBtn = document.getElementById(`filter-${level}`);
+            if (activeBtn) activeBtn.className = "px-2 py-1 rounded-md bg-sky-500/20 text-sky-400 border border-sky-500/30 font-semibold";
+            applyFilters();
+        }
+
+        function toggleBookmarkOnly() {
+            showBookmarkOnly = !showBookmarkOnly;
+            const btn = document.getElementById('bookmark-toggle-btn');
+            if (btn) {
+                if (showBookmarkOnly) {
+                    btn.className = "px-2 py-1 rounded-md bg-amber-500/20 text-amber-400 border border-amber-500/30 font-semibold flex items-center gap-1 flex-none";
+                } else {
+                    btn.className = "px-2 py-1 rounded-md bg-slate-800 text-slate-400 hover:bg-slate-700 flex items-center gap-1 flex-none";
+                }
+            }
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const query = (document.getElementById('doc-search-input')?.value || '').toLowerCase();
+            const filtered = legalDatabase.filter(doc => {
+                const matchesSearch = doc.title.toLowerCase().includes(query) || doc.code.toLowerCase().includes(query);
+                const matchesLevel = currentLevelFilter === 'all' || doc.level === currentLevelFilter;
+                const matchesBookmark = !showBookmarkOnly || bookmarks.includes(doc.id);
+                return matchesSearch && matchesLevel && matchesBookmark;
+            });
+
+            renderDocList(filtered);
+        }
+
+        // RENDER DOCUMENT LIST
+        function renderDocList(list) {
+            const container = document.getElementById('doc-list-container');
+            if(!container) return;
+
+            if (list.length === 0) {
+                container.innerHTML = `<div class="p-4 text-center text-xs text-slate-500">Không tìm thấy văn bản phù hợp</div>`;
+                return;
+            }
+
+            container.innerHTML = list.map(doc => {
+                const isSelected = doc.id === selectedDocId;
+                const isBookmarked = bookmarks.includes(doc.id);
+                return `
+                    <div onclick="selectDocument('${doc.id}')" 
+                         class="p-3 rounded-xl border transition cursor-pointer flex flex-col gap-1.5 ${isSelected ? 'bg-sky-950/40 border-sky-500/50 shadow-md' : 'bg-slate-900 border-slate-800 hover:border-slate-700'}">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${doc.level === 'phu-tho' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-sky-500/10 text-sky-400 border border-sky-500/20'}">
+                                ${doc.code}
+                            </span>
+                            <button onclick="event.stopPropagation(); toggleBookmark('${doc.id}')" class="text-slate-500 hover:text-amber-400 transition text-xs">
+                                <i class="${isBookmarked ? 'fa-solid text-amber-400' : 'fa-regular'} fa-bookmark"></i>
+                            </button>
+                        </div>
+                        <h4 class="text-xs font-bold text-slate-200 leading-snug line-clamp-2">${doc.title}</h4>
+                        <div class="flex items-center justify-between text-[10px] text-slate-400 pt-1 border-t border-slate-800/60">
+                            <span><i class="fa-regular fa-building"></i> ${doc.issuer}</span>
+                            <span>${doc.date}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectDocument(docId) {
+            selectedDocId = docId;
+            applyFilters();
+
+            const doc = legalDatabase.find(d => d.id === docId);
+            const detailContainer = document.getElementById('doc-detail-view');
+            if (!detailContainer || !doc) return;
+
+            const isBookmarked = bookmarks.includes(doc.id);
+
+            detailContainer.innerHTML = `
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 md:p-6 space-y-4 shadow-xl">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+                        <div>
+                            <span class="text-xs font-mono font-bold px-2 py-0.5 rounded ${doc.level === 'phu-tho' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : 'bg-sky-500/10 text-sky-400 border border-sky-500/20'}">
+                                ${doc.code}
+                            </span>
+                            <h2 class="text-base md:text-xl font-extrabold text-slate-100 mt-2">${doc.title}</h2>
+                        </div>
+                        <button onclick="toggleBookmark('${doc.id}')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs rounded-xl transition flex items-center gap-1.5 self-start sm:self-auto">
+                            <i class="${isBookmarked ? 'fa-solid text-amber-400' : 'fa-regular'} fa-bookmark"></i>
+                            <span>${isBookmarked ? 'Đã lưu văn bản' : 'Lưu văn bản'}</span>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs bg-slate-950 p-3 rounded-xl border border-slate-800">
+                        <div><span class="text-slate-500 block">Cơ quan ban hành:</span> <strong class="text-slate-200">${doc.issuer}</strong></div>
+                        <div><span class="text-slate-500 block">Ngày ban hành:</span> <strong class="text-slate-200">${doc.date}</strong></div>
+                        <div><span class="text-slate-500 block">Phạm vi áp dụng:</span> <strong class="text-sky-400">${doc.level === 'phu-tho' ? 'Tỉnh Phú Thọ' : 'Toàn quốc'}</strong></div>
+                    </div>
+
+                    <div class="p-4 bg-sky-950/20 border border-sky-500/20 rounded-xl text-xs text-slate-300 leading-relaxed">
+                        <strong class="text-sky-400 font-bold block mb-1">Tóm tắt nội dung chính:</strong>
+                        ${doc.summary}
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-800">
+                        ${doc.content}
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleBookmark(docId) {
+            if (bookmarks.includes(docId)) {
+                bookmarks = bookmarks.filter(id => id !== docId);
+                showToast('Đã xóa khỏi danh sách lưu');
+            } else {
+                bookmarks.push(docId);
+                showToast('Đã lưu văn bản thành công!');
+            }
+            localStorage.setItem('land_law_bookmarks', JSON.stringify(bookmarks));
+            applyFilters();
+            if (selectedDocId === docId) selectDocument(docId);
+        }
+
+        // RENDER PROCEDURE TABLE WITH SHORTENED NAMES AND COMPONENT BUTTONS
+        function renderProcedureTable() {
+            const container = document.getElementById('proc-list-items');
+            if(!container) return;
+            container.innerHTML = procedureList.map(item => `
+                <div class="p-2.5 bg-slate-950 rounded-xl border border-slate-800 hover:border-slate-700 transition flex items-center justify-between gap-2">
+                    <div class="space-y-0.5 min-w-0 flex-1">
+                        <div class="font-bold text-slate-100 text-xs truncate" title="${item.fullName}">
+                            ${item.shortName}
+                        </div>
+                        <div class="text-[10px] text-sky-400 font-mono font-bold flex items-center gap-1">
+                            <i class="fa-regular fa-clock text-[9px]"></i> ${item.days} ngày làm việc
+                        </div>
+                    </div>
+
+                    <button onclick="openDossierModal(${item.id})" 
+                            class="px-2.5 py-1.5 rounded-lg bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 border border-sky-500/30 font-semibold text-[11px] transition flex items-center gap-1.5 flex-none"
+                            title="Xem chi tiết thành phần hồ sơ & file mẫu đính kèm">
+                        <i class="fa-solid fa-folder-open text-amber-400 text-[10px]"></i> Thành phần hồ sơ
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function openDossierModal(procId) {
+            const item = procedureList.find(p => p.id === procId);
+            if (!item) return;
+
+            document.getElementById('dossier-modal-title').innerHTML = `THÀNH PHẦN HỒ SƠ: <span class="text-sky-400">${item.shortName.toUpperCase()}</span>`;
+            document.getElementById('dossier-days').textContent = `${item.days} ngày làm việc`;
+
+            const checklistContainer = document.getElementById('dossier-checklist');
+            checklistContainer.innerHTML = item.checklist.map((c, idx) => `
+                <li class="pt-2 flex items-start gap-2 text-slate-300">
+                    <span class="w-4 h-4 rounded-full bg-slate-800 text-sky-400 font-bold text-[10px] flex items-center justify-center flex-none mt-0.5">${idx + 1}</span>
+                    <span class="leading-snug">${c}</span>
+                </li>
+            `).join('');
+
+            const templatesContainer = document.getElementById('dossier-templates');
+            templatesContainer.innerHTML = item.templates.map(t => `
+                <div class="p-3 bg-slate-950 border border-slate-800 rounded-xl flex items-center justify-between hover:border-slate-700 transition">
+                    <div class="flex items-center gap-2 overflow-hidden mr-2">
+                        <i class="fa-solid ${t.icon} text-base flex-none"></i>
+                        <span class="truncate text-[11px] text-slate-200 font-medium" title="${t.name}">${t.name}</span>
+                    </div>
+                    <button onclick="downloadSampleFile('${t.name}')" class="p-1.5 text-slate-400 hover:text-sky-400 hover:bg-slate-800 rounded-lg transition" title="Tải/Xem mẫu">
+                        <i class="fa-solid fa-download"></i>
+                    </button>
+                </div>
+            `).join('');
+
+            document.getElementById('dossier-modal').classList.remove('hidden');
+        }
+
+        function closeDossierModal() {
+            document.getElementById('dossier-modal').classList.add('hidden');
+        }
+
+        function downloadSampleFile(fileName) {
+            showToast(`Đã mở mẫu tài liệu: ${fileName}`);
+        }
+
+        function calculateProcDueDate() {
+            const procTypeVal = document.getElementById('proc-type').value;
+            const startDateVal = document.getElementById('proc-start-date').value;
+            const isMountain = document.getElementById('proc-mountain').checked;
+
+            if (!startDateVal) return;
+
+            let baseDays = parseInt(procTypeVal);
+            if (isMountain) baseDays += 10;
+
+            let currentDate = new Date(startDateVal);
+            let addedDays = 0;
+
+            while (addedDays < baseDays) {
+                currentDate.setDate(currentDate.getDate() + 1);
+                const dayOfWeek = currentDate.getDay();
+                if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                    addedDays++;
+                }
+            }
+
+            const formattedDate = currentDate.toLocaleDateString('vi-VN', {
+                weekday: 'long',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+
+            document.getElementById('res-proc-date').textContent = formattedDate;
+        }
+
+        // AI CASE EVALUATION SIMULATION
+        function runAiEvaluation() {
+            const input = document.getElementById('ai-case-input')?.value.trim();
+            if (!input) {
+                showToast('Vui lòng nhập mô tả tình huống cần thẩm định!');
+                return;
+            }
+
+            const panel = document.getElementById('ai-result-panel');
+            const content = document.getElementById('ai-result-content');
+            if(!panel || !content) return;
+            
+            panel.classList.remove('hidden');
+
+            content.innerHTML = `<div class="py-4 text-center text-sky-400 font-semibold"><i class="fa-solid fa-spinner fa-spin"></i> Đang đối soát quy định pháp luật và thẩm định hồ sơ...</div>`;
+
+            setTimeout(() => {
+                content.innerHTML = `
+                    <div class="p-3 bg-emerald-950/40 border border-emerald-500/30 rounded-xl space-y-1">
+                        <strong class="text-emerald-400 font-bold">1. Đánh giá sơ bộ:</strong>
+                        <p class="text-slate-300">Hồ sơ đủ điều kiện thực hiện thủ tục theo quy định tại Điều 220 Luật Đất đai 2024 & Quyết định 22/2024/UBND tỉnh Phú Thọ.</p>
+                    </div>
+                    <div class="p-3 bg-slate-950 border border-slate-800 rounded-xl space-y-1">
+                        <strong class="text-sky-400 font-bold">2. Căn cứ pháp lý áp dụng:</strong>
+                        <ul class="list-disc pl-4 space-y-1 text-slate-300">
+                            <li>Khoản 1 Điều 220 Luật Đất đai 2024 (Điều kiện tách thửa).</li>
+                            <li>Quyết định số 22/2024/UBND tỉnh Phú Thọ về hạn mức diện tích tối thiểu.</li>
+                            <li>Nghị định 101/2024/NĐ-CP (Trình tự thủ tục cấp đổi/tách thửa).</li>
+                        </ul>
+                    </div>
+                    <div class="p-3 bg-amber-950/40 border border-amber-500/30 rounded-xl space-y-1">
+                        <strong class="text-amber-400 font-bold">3. Khuyến nghị hồ sơ cần chuẩn bị:</strong>
+                        <p class="text-slate-300">Chuẩn bị Đơn đề nghị tách thửa (Mẫu 01/THTN), bản gốc GCN QSDĐ và liên hệ Văn phòng Đăng ký Đất đai để trích đo địa chính.</p>
+                    </div>
+                `;
+            }, 800);
+        }
+
+        function clearAiInput() {
+            const input = document.getElementById('ai-case-input');
+            const panel = document.getElementById('ai-result-panel');
+            if (input) input.value = '';
+            if (panel) panel.classList.add('hidden');
+        }
+
+        // TOAST UTILITY
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const msgSpan = document.getElementById('toast-message');
+            if(!toast || !msgSpan) return;
+            msgSpan.textContent = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
